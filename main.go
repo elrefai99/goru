@@ -12,7 +12,6 @@ type Owner struct {
 	Login string
 }
 
-// Item is the single repository data structure
 type Item struct {
 	ID              int
 	Name            string
@@ -23,36 +22,36 @@ type Item struct {
 	StargazersCount int    `json:"stargazers_count"`
 }
 
-// JSONData contains the GitHub API response
-type JSONData struct {
-	Count int `json:"total_count"`
-	Items []Item
-}
-
 func main() {
-
 	var username string
 	fmt.Print("Enter GitHub username: ")
 	fmt.Scanln(&username)
-	res, err := http.Get("https://api.github.com/search/repositories?q=" + username)
+
+	res, err := http.Get("https://api.github.com/users/" + username + "/repos")
 	if err != nil {
 		log.Fatal(err)
 	}
+	defer res.Body.Close()
+
 	body, err := ioutil.ReadAll(res.Body)
-	res.Body.Close()
-
 	if err != nil {
 		log.Fatal(err)
 	}
+
 	if res.StatusCode != 200 {
-		log.Fatal("Unexpected status code", res.StatusCode)
+		log.Fatalf("Unexpected status code: %d\nBody: %s", res.StatusCode, body)
 	}
-	fmt.Printf("Total repositories found: %d\n\n", body)
-	data := JSONData{}
-	err = json.Unmarshal(body, &data)
+
+	var items []Item
+	err = json.Unmarshal(body, &items)
 	if err != nil {
 		log.Fatal(err)
 	}
-	PrintResponse(data)
 
+	if len(items) == 0 {
+		fmt.Println("No repositories found for user:", username)
+		return
+	}
+
+	PrintResponse(items)
 }
