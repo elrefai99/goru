@@ -10,6 +10,7 @@ func PrintResponse(items []Item) {
 	format := "%v\t%v\t%v\t\n"
 
 	tw := new(tabwriter.Writer).Init(os.Stdout, 0, 8, 2, ' ', 0)
+	fmt.Println("gour>")
 	fmt.Fprintf(tw, format, "Repository", "Stars", "Description")
 	fmt.Fprintf(tw, format, "----------", "-----", "-----------")
 

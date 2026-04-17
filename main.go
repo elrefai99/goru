@@ -24,14 +24,13 @@ type Item struct {
 
 func main() {
 	var username string
-	fmt.Print("Enter GitHub username: ")
+	fmt.Print("gour> Enter GitHub username: ")
 	fmt.Scanln(&username)
 
 	res, err := http.Get("https://api.github.com/users/" + username + "/repos")
 	if err != nil {
 		log.Fatal(err)
 	}
-	defer res.Body.Close()
 
 	body, err := ioutil.ReadAll(res.Body)
 	if err != nil {
@@ -41,6 +40,7 @@ func main() {
 	if res.StatusCode != 200 {
 		log.Fatalf("Unexpected status code: %d\nBody: %s", res.StatusCode, body)
 	}
+	res.Body.Close()
 
 	var items []Item
 	err = json.Unmarshal(body, &items)
