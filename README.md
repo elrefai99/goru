@@ -1,4 +1,4 @@
-"# goru
+# goru
 
 goru is a small Go command-line tool that fetches a GitHub user's public repositories and displays the repository name, star count, and description in a tabular format.
 
